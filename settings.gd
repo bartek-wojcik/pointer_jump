@@ -10,14 +10,16 @@ var circles_per_level = 5
 func _ready():
 	load_settings()
 
-var theme = {
+var themes = [{
 	'background': Color8(0, 0, 0),
 	'player_body': Color8(203, 255, 0),
 	'player_trail': Color8(204, 0, 255),
 	'circle_fill': Color8(255, 0, 110),
 	'circle_static': Color8(0, 255, 102),
 	'circle_limited': Color8(204, 0, 255)
-}
+}]
+
+var theme = themes[0]
 
 static func rand_weighted(weights):
 	var sum = 0

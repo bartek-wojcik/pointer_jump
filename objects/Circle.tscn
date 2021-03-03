@@ -134,4 +134,4 @@ __meta__ = {
 stream = ExtResource( 5 )
 
 [node name="MoveTween" type="Tween" parent="."]
-[connection signal="tween_completed" from="MoveTween" to="." method="set_tween"]
+[connection signal="tween_completed" from="MoveTween" to="." method="_on_MoveTween_tween_completed"]

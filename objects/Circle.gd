@@ -19,13 +19,13 @@ func init(_position, level=1):
 	var _mode = settings.rand_weighted([5, level-1])
 	set_mode(_mode)
 	position = _position
-	var move_chance = clamp(level-5, 0, 9) / 5.0
-	if randf() < move_chance:
-		move_range = max(25, 100 * rand_range(0.75, 1.25) * move_chance) * pow(-1, randi() % 2)
-		move_speed = max(2.5 - ceil(level/5) * 0.25, 0.75)
 	var small_chance = min(0.9, max(0, (level-10) / 20.0))
 	if randf() < small_chance:
-		radius = max(50, radius - level * rand_range(0.75, 1.25))
+		radius = max(40, radius - level * rand_range(0.75, 1.25))
+	var move_chance = clamp(level-5, 0, 5) / 5.0
+	if randf() < move_chance:
+		move_range = max(50, 270 * move_chance - 2 * radius) * pow(-1, randi() % 2)
+		move_speed = max(ceil(level/10) * 0.25, 1)
 	$Sprite.material = $Sprite.material.duplicate()
 	$SpriteEffect.material = $Sprite.material
 	$CollisionShape2D.shape = $CollisionShape2D.shape.duplicate()
@@ -104,5 +104,8 @@ func set_tween():
 	move_tween.interpolate_property(self, "position:x",
 				position.x, position.x + move_range,
 				move_speed, Tween.TRANS_QUAD, Tween.EASE_IN_OUT)
-	move_tween.start()	
+	move_tween.start()
+
 	
+func _on_MoveTween_tween_completed(object, key):
+	set_tween()
