@@ -5,7 +5,7 @@ onready var move_tween = $MoveTween
 
 enum MODES { STATIC, LIMITED }
 
-var radius = 100
+var _radius = 80
 var rotation_speed = PI
 var mode = MODES.STATIC
 var move_range = 0
@@ -19,20 +19,20 @@ func init(_position, level=1):
 	var _mode = settings.rand_weighted([5, level-1])
 	set_mode(_mode)
 	position = _position
-	var small_chance = min(0.9, max(0, (level-10) / 20.0))
+	var small_chance = level / 6.0
 	if randf() < small_chance:
-		radius = max(40, radius - level * rand_range(0.75, 1.25))
-	var move_chance = clamp(level-5, 0, 5) / 5.0
+		_radius = max(40, _radius - level * 5)
+	var move_chance = level / 6.0
 	if randf() < move_chance:
-		move_range = max(50, 270 * move_chance - 2 * radius) * pow(-1, randi() % 2)
-		move_speed = max(ceil(level/10) * 0.25, 1)
+		move_range = max(50, 270 * move_chance - 2 * _radius) * pow(-1, randi() % 2)
+		move_speed = max(ceil(level/5) * 0.25, 1)
 	$Sprite.material = $Sprite.material.duplicate()
 	$SpriteEffect.material = $Sprite.material
 	$CollisionShape2D.shape = $CollisionShape2D.shape.duplicate()
-	$CollisionShape2D.shape.radius = radius
+	$CollisionShape2D.shape.radius = _radius
 	var img_size = $Sprite.texture.get_size().x / 2
-	$Sprite.scale = Vector2(1, 1) * radius / img_size
-	orbit_position.position.x = radius + 25
+	$Sprite.scale = Vector2(1, 1) * _radius / img_size
+	orbit_position.position.x = _radius + 25
 	rotation_speed *= pow(-1, randi() % 2)
 	set_tween()
 
@@ -82,7 +82,7 @@ func capture(target):
 	
 func _draw():
 	if pointer:
-		var r = ((radius - 50) / num_orbits) * (1 + num_orbits - orbits_left)
+		var r = ((_radius - 50) / num_orbits) * (1 + num_orbits - orbits_left)
 		draw_circle_arc_poly(Vector2.ZERO, r, orbit_start + PI/2,
 							$Pivot.rotation + PI/2, settings.theme["circle_fill"])
 	
@@ -106,6 +106,5 @@ func set_tween():
 				move_speed, Tween.TRANS_QUAD, Tween.EASE_IN_OUT)
 	move_tween.start()
 
-	
 func _on_MoveTween_tween_completed(object, key):
 	set_tween()

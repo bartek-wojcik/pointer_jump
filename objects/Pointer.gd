@@ -5,9 +5,9 @@ signal died
 
 onready var trail = $Trail/Points
 
-var velocity = Vector2(100, 0)  # start value for testing
+var velocity = Vector2(100, 0)  
 var jump_speed = 1000
-var target = null  # if we're on a circle
+var target = null 
 var trail_length = 25
 
 func _ready():
@@ -49,6 +49,5 @@ func die():
 	queue_free()
 
 func _on_VisibilityNotifier2D_screen_exited():
-	if !target:
-		emit_signal("died")		
-		die()
+	emit_signal("died")
+	die()

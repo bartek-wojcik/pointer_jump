@@ -47,6 +47,8 @@ func _on_button_pressed(button):
 			settings.enable_music = !settings.enable_music
 			button.texture_normal = music_buttons[settings.enable_music]
 			settings.save_settings()
+		"Leaderboard":
+			GooglePlay.show_leaderboard()
 			
 			
 func change_screen(new_screen):

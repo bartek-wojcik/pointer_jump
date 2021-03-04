@@ -39,5 +39,4 @@ stream = ExtResource( 4 )
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="."]
 environment = SubResource( 1 )
-
 [connection signal="start_game" from="Screens" to="." method="new_game"]

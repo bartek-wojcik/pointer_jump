@@ -1,7 +1,7 @@
 extends Node
 
-var play_games_services
-var leaderboard_id = "CgkI3cip4vwDEAIQAA"
+var play_games_services = null
+var L_ID = "CgkI3cip4vwDEAIQAA"
 var Circle = preload("res://objects/Circle.tscn")
 var Pointer = preload("res://objects/Pointer.tscn")
 
@@ -10,22 +10,7 @@ var score = -1 setget set_score
 var highscore = 0
 var level = 0 
 
-func initialize_play_services():
-	if Engine.has_singleton("GodotPlayGamesServices"):
-		play_games_services = Engine.get_singleton("GodotPlayGamesServices")
-		var show_popups := true 
-		play_games_services.init(show_popups)
-		play_games_services.connect("_on_leaderboard_score_submitted", self, "_on_leaderboard_score_submitted") # leaderboard_id: String
-		play_games_services.connect("_on_leaderboard_score_submitting_failed", self, "_on_leaderboard_score_submitting_failed") # leaderboard_id: String
-
-func _on_leaderboard_score_submitted(leaderboard_id: String):
-	print('success')
-
-func _on_leaderboard_score_submitting_failed(leaderboard_id: String):
-	print(leaderboard_id)
-
 func _ready():
-	initialize_play_services()
 	randomize()
 	load_score()
 	$HUD.hide()
@@ -37,13 +22,14 @@ func new_game():
 	$Camera2D.position = $StartPosition.position
 	player = Pointer.instance()
 	player.position = $StartPosition.position
-	add_child(player)
 	player.connect("captured", self, "_on_Pointer_captured")
 	player.connect("died", self, "_on_Pointer_died")
 	spawn_circle($StartPosition.position)
+	add_child(player)	
 	$HUD.show()
 	$HUD.show_message("Go!")
 	if settings.enable_music:
+		$Music.volume_db = 0
 		$Music.play()
 	
 func spawn_circle(_position=null):
@@ -91,8 +77,7 @@ func load_score():
 		update_highscore_title()
 		
 func save_score():
-	if play_games_services:
-		play_games_services.submitLeaderBoardScore(leaderboard_id, highscore)
+	GooglePlay.submit_score(highscore)
 	var f = File.new()
 	f.open(settings.score_file, File.WRITE)
 	f.store_var(highscore)
